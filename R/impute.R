@@ -58,19 +58,3 @@ impute_covariate <- function(recipient, donors, covariates, weights, p = 2) {
   colSums(ordered_donor_covariates * weights)
 
 }
-
-impute_error <- function(
-  recipient,
-  donors,
-  covariates,
-  errors,
-  weights,
-  p = 2
-) {
-
-  ordered_donors <- order_donors(recipient, donors, covariates, p)
-
-  ordered_donor_errors <- errors[ordered_donors[seq_along(weights)]]
-
-  sum(ordered_donor_errors * weights)
-}
