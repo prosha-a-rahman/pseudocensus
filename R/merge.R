@@ -28,31 +28,16 @@ merge_responses <- function(
 
   if (is.null(donors)) { donors <- identify_donors(responses) }
 
-  imputation_wrapper <- function(recipient) {
-    impute_response(
-      recipient = recipient,
-      covariates = covariates,
-      responses = responses,
-      weights = weights,
-      donors = donors,
-      p = p
-    )
-  }
+  imputed_responses <- impute_responses(
+    recipients = recipients,
+    covariates = covariates,
+    responses = responses,
+    weights = weights,
+    donors = donors,
+    p = p
+  )
 
-  imputed_values <- vapply(recipients, imputation_wrapper, double(1))
-
-  # responses[recipients] <- vapply(
-  #   recipients,
-  #   impute_response,
-  #   double(1),
-  #   donors,
-  #   covariates,
-  #   responses,
-  #   weights,
-  #   p
-  # )
-
-  responses[recipients] <- imputed_values
+  responses[recipients] <- imputed_responses
 
   responses
 

@@ -24,21 +24,8 @@ merge_covariates(
 )
 }
 \arguments{
-\item{covariates}{Numeric matrix where each row is an individual's covariates.}
-
-\item{responses}{Numeric vector of responses, pontentitally containing
-missing \code{NA} values}
-
-\item{weights}{Numeric vector of weights used for calculating the weighted
-average.}
-
-\item{p}{A double >= 1 (or \code{Inf}) specifying which \code{p}-norm to use for
-distance calculations. The deafult is \code{p = 2} (Euclidean distances).}
-
 \item{recipients}{Integer vector of recipients whose responses, possibly
 missing, require imputation}
-
-\item{donors}{Integer vector of indices identifying the donors in \code{covariates}.}
 }
 \value{
 \itemize{

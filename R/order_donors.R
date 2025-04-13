@@ -24,12 +24,6 @@ order_donors <- function(recipient, donors, covariates, p = 2) {
 
   donor_covariates <- covariates[donors, , drop = FALSE]
 
-  # donor_distances <- lp_distance(
-  #   reference_point = recipient_covariate,
-  #   point_matrix =  donor_covariates,
-  #   p = p
-  # )
-
   ranked_donors <- Rfast::dista(
     xnew = recipient_covariate,
     x = donor_covariates,

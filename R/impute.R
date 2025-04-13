@@ -6,6 +6,8 @@
 #'   covariate vector of the `recipient`.
 #'
 #' @inheritParams order_donors
+#' @param recipients An integer vector that identifies the indexes of the
+#'   recipients whose response is to be imputed.
 #' @param weights Numeric vector of weights used for calculating the weighted
 #'   average.
 #' @param responses Numeric vector of responses, pontentitally containing
@@ -18,8 +20,8 @@
 #'   covariates of the `length(weights)` nearest donors.
 #'
 #' @export
-impute_response <- function(
-  recipient,
+impute_responses <- function(
+  recipients,
   covariates,
   responses,
   weights,
@@ -29,16 +31,28 @@ impute_response <- function(
 
   if (is.null(donors)) { donors <- identify_donors(responses) }
 
-  ordered_donors <- order_donors(
-    recipient = recipient,
-    donors = donors,
-    covariates = covariates,
-    p = p
-  )
+  order_donors_wrapper <- function(recipient) {
 
-  ordered_donor_responses <- responses[ordered_donors[seq_along(weights)]]
+    order_donors(
+      recipient = recipient,
+      donors = donors,
+      covariates = covariates,
+      p = p
+    )
 
-  sum(ordered_donor_responses * weights)
+  }
+
+  n_donors <- length(donors)
+
+  ordered_donors <- vapply(recipients, order_donors_wrapper, integer(n_donors))
+
+  donor_responses <- responses[ordered_donors]
+
+  dim(donor_responses) <- dim(ordered_donors)
+
+  imputed_responses <- t(weights) %*% donor_responses
+
+  as.numeric(imputed_responses)
 
 }
 
