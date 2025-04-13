@@ -12,4 +12,5 @@ LazyData: true
 RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 Imports: 
+    MASS,
     Rfast

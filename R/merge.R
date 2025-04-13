@@ -1,88 +1,81 @@
-#' Merge imputed and observed responses and covariates
+#' Merge imputed and observed responses and locations
 #'
-#' Combine observed and imputed responses (or covariates) into a single object.
+#' Combine observed and imputed responses (or locations) into a single array.
 #'
-#' @inheritParams impute_response
-#' @param recipients Integer vector of recipients whose responses, possibly
-#'   missing, require imputation
+#' @inheritParams impute_all_recipient_responses
 #'
 #' @return
 #' * `merge_responses()`: returns `responses`, except where the responses for
-#'   the recipient indices have been replaced with their weighted \eqn{k}
-#'   nearest neighbours imputed equivalent.
-#' * `merge_covariates()`: returns `covariates`, except where the rows for the
-#'   recipient indices have been replaced with their weighted \eqn{k}
-#'   nearest neighbours imputed equivalent.
+#'   the recipient indices have been replaced with their imputed equivalent.
+
+#' * `merge_locations()`: returns `locations`, except where the rows for the
+#'   recipient indices have been replaced with their imputed equivalent.
 #'
 #' @export
 merge_responses <- function(
-  covariates,
-  responses,
-  weights,
-  p = 2,
-  recipients = NULL,
-  donors = NULL
+    locations,
+    responses,
+    weights,
+    p = 2,
+    all_recipients = NULL,
+    donors = NULL
 ) {
 
-  if (is.null(recipients)) { recipients <- identify_recipients(responses) }
+  if (is.null(all_recipients)) {
+
+    all_recipients <- identify_recipients(responses)
+
+  }
 
   if (is.null(donors)) { donors <- identify_donors(responses) }
 
-  imputed_responses <- impute_responses(
-    recipients = recipients,
-    covariates = covariates,
+  imputed_responses <- impute_all_recipient_responses(
+    all_recipients = all_recipients,
+    locations = locations,
     responses = responses,
     weights = weights,
     donors = donors,
     p = p
   )
 
-  responses[recipients] <- imputed_responses
+  responses[all_recipients] <- imputed_responses
 
   responses
 
 }
 
+
+
+
 #' @rdname merge_responses
 #' @export
-merge_covariates <- function(
-  covariates,
-  weights,
-  p = 2,
-  recipients = NULL,
-  donors = NULL,
-  responses = NULL
+merge_locations <- function(
+    locations,
+    weights,
+    p = 2,
+    all_recipients = NULL,
+    donors = NULL,
+    responses = NULL
 ) {
 
-  if (is.null(recipients)) { recipients <- identify_recipients(responses) }
+  if (is.null(all_recipients)) {
+
+    all_recipients <- identify_recipients(responses)
+
+  }
 
   if (is.null(donors)) { donors <- identify_donors(responses) }
 
-  n_parameters <- ncol(covariates)
+  imputed_recipient_locations <- impute_all_recipient_locations(
+    all_recipients = all_recipients,
+    donors = donors,
+    locations = locations,
+    weights = weights,
+    p = p
+  )
 
-  # covariates[recipients, ] <- vapply(
-  #   recipients,
-  #   impute_covariate,
-  #   double(number_parameters),
-  #   donors,
-  #   covariates,
-  #   weights
-  # ) |> t()
+  locations[all_recipients, ] <- imputed_recipient_locations
 
-  imputation_wrapper <- function(recipient) {
-    impute_covariate(
-      recipient = recipient,
-      donors = donors,
-      covariates = covariates,
-      weights = weights,
-      p = p
-    )
-  }
-
-  imputed_values <- vapply(recipients, imputation_wrapper, double(n_parameters))
-
-  covariates[recipients, ] <- t(imputed_values)
-
-  covariates
+  locations
 
 }

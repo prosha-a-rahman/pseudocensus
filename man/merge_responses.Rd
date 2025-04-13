@@ -2,41 +2,53 @@
 % Please edit documentation in R/merge.R
 \name{merge_responses}
 \alias{merge_responses}
-\alias{merge_covariates}
-\title{Merge imputed and observed responses and covariates}
+\alias{merge_locations}
+\title{Merge imputed and observed responses and locations}
 \usage{
 merge_responses(
-  covariates,
+  locations,
   responses,
   weights,
   p = 2,
-  recipients = NULL,
+  all_recipients = NULL,
   donors = NULL
 )
 
-merge_covariates(
-  covariates,
+merge_locations(
+  locations,
   weights,
   p = 2,
-  recipients = NULL,
+  all_recipients = NULL,
   donors = NULL,
   responses = NULL
 )
 }
 \arguments{
-\item{recipients}{Integer vector of recipients whose responses, possibly
-missing, require imputation}
+\item{locations}{Numeric matrix identifying rowwise location of indexes.}
+
+\item{responses}{Numeric vector of responses, potentially containing
+missing \code{NA} values.}
+
+\item{weights}{Numeric vector of weights used for calculating the weighted
+average response or location.}
+
+\item{p}{Number >= 1 (or \code{Inf}) specifying which \code{p}-norm to use for
+distance calculations. The default is \code{p = 2} (Euclidean distances).}
+
+\item{all_recipients}{Index vector that identifies the recipients whose
+responses are to be imputed.}
+
+\item{donors}{Index vector of donors. If \code{donors = NULL}, then the donors are
+identified by the indexes of non-\code{NA} values in \code{responses}.}
 }
 \value{
 \itemize{
 \item \code{merge_responses()}: returns \code{responses}, except where the responses for
-the recipient indices have been replaced with their weighted \eqn{k}
-nearest neighbours imputed equivalent.
-\item \code{merge_covariates()}: returns \code{covariates}, except where the rows for the
-recipient indices have been replaced with their weighted \eqn{k}
-nearest neighbours imputed equivalent.
+the recipient indices have been replaced with their imputed equivalent.
+\item \code{merge_locations()}: returns \code{locations}, except where the rows for the
+recipient indices have been replaced with their imputed equivalent.
 }
 }
 \description{
-Combine observed and imputed responses (or covariates) into a single object.
+Combine observed and imputed responses (or locations) into a single array.
 }
