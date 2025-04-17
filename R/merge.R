@@ -2,7 +2,7 @@
 #'
 #' Combine observed and imputed responses (or locations) into a single array.
 #'
-#' @inheritParams impute_all_recipient_responses
+#' @inheritParams impute_response
 #'
 #' @return
 #' * `merge_responses()`: returns `responses`, except where the responses for

@@ -4,8 +4,8 @@
 #' population subset using weighted \eqn{k} nearest neighbours.
 #'
 #' @inheritParams order_donors
-#' @param all_recipients Index vector that identifies the recipients whose
-#'   responses are to be imputed.
+#' @param recipients Index vector (or integer) that identifies the recipients
+#'   whose responses are to be imputed.
 #' @param weights Numeric vector of weights used for calculating the weighted
 #'   average response or location.
 #' @param responses Numeric vector of responses, potentially containing
@@ -14,30 +14,23 @@
 #'  identified by the indexes of non-`NA` values in `responses`.
 #'
 #' @details
-#' `impute_all_recipient_responses()` generates responses for each element in
-#' `all_recipients` using a weighted average of proximal donor responses.
-#' `impute_all_recipient_location()` provides an analogue for the location of
-#' `all_recipients`.
+#' `impute_responses()` generates responses for each element in `recipients`
+#'   using a weighted average of proximal donor responses. `impute_location()`
+#'   provides an analogue for the location of `recipients`.
 #'
 #' @return
-#' * `impute_all_recipient_responses()`: A length `length(all_recipients)`
-#'   numeric vector of the weighted averages of the `length(weights)` nearest
-#'   donors for each recipient.
+#' * `impute_response()`: A length `length(recipients)` numeric vector of the
+#'   weighted averages of the `length(weights)` nearest donors for each
+#'   recipient.
 #'
-#' * `impute_recipient_location()`: A numeric vector that approximates the
-#'   location of the recipient using the weighted average of the location of the
-#'   `length(weights)` nearest donors. The length of the output is the
-#'   dimension of the location—`ncol(locations)`.
-#'
-#' * `impute_all_recipient_locations()`: A
-#'   `length(all_recipients) × ncol(locations)` matrix where each row contains
-#'   the approximated location for a recipient.
+#' * `impute_locations()`: A `length(recipients) × ncol(locations)` matrix where
+#'   each row contains the approximated location for a recipient.
 #'
 #' @seealso [order_donors()] for how distances are calculated.
 #'
 #' @export
-impute_all_recipient_responses <- function(
-    all_recipients,
+impute_responses <- function(
+    recipients,
     locations,
     responses,
     weights,
@@ -62,7 +55,7 @@ impute_all_recipient_responses <- function(
   }
 
   ordered_donors <- vapply(
-    all_recipients,
+    recipients,
     order_donors_wrapper,
     integer(n_weights)
   )
@@ -78,8 +71,57 @@ impute_all_recipient_responses <- function(
 
 
 
-#' @rdname impute_all_recipient_responses
+#' @rdname impute_responses
 #' @export
+impute_locations <- function(
+    recipients,
+    donors,
+    locations,
+    weights,
+    p = 2
+) {
+
+  if (length(recipients) == 1) {
+
+    # Force the edge case so that the transposition doesn't coerce a column
+    # vector. This ensures that merging the locations doesn't later break.
+    return(
+      impute_recipient_location(
+        recipient = recipients,
+        donors = donors,
+        locations = locations,
+        weights = weights,
+        p = p
+      )
+    )
+
+  }
+
+  impute_recipient_location_wrapper <- function(recipient) {
+
+    impute_recipient_location(
+      recipient = recipient,
+      donors = donors,
+      locations = locations,
+      weights = weights,
+      p = p
+    )
+
+  }
+
+  dim_locations <- ncol(locations)
+
+  vapply(
+    recipients,
+    impute_recipient_location_wrapper,
+    numeric(dim_locations)
+  ) |> t()
+
+}
+
+
+
+
 impute_recipient_location <- function(
     recipient,
     donors,
@@ -101,40 +143,5 @@ impute_recipient_location <- function(
   ordered_donor_locations <- locations[ordered_donors, ]
 
   crossprod(weights, ordered_donor_locations)[1, ]
-
-}
-
-
-
-
-#' @rdname impute_all_recipient_responses
-#' @export
-impute_all_recipient_locations <- function(
-    all_recipients,
-    donors,
-    locations,
-    weights,
-    p = 2
-) {
-
-  impute_recipient_location_wrapper <- function(recipient) {
-
-    impute_recipient_location(
-      recipient = recipient,
-      donors = donors,
-      locations = locations,
-      weights = weights,
-      p = p
-    )
-
-  }
-
-  dim_locations <- ncol(locations)
-
-  vapply(
-    all_recipients,
-    impute_recipient_location_wrapper,
-    numeric(dim_locations)
-  ) |> t()
 
 }
