@@ -18,7 +18,8 @@ the candidate points.  \code{donors} must be disjoint to \code{recipients}.}
 \item{n_weights}{A positive integer defining the number of weights used in
 in the weighted nearest neighbours estimates, uniformly for all \code{recipients}.
 The number of weights cannot exceed the number of valid donors, i.e.,
-\code{n_weights <= length(donors)}.}
+\code{n_weights <= length(donors)}. The default argument sets
+\code{n_weights = length(donors)}.}
 }
 \value{
 A numeric vector of length \code{n_weights}.
@@ -26,4 +27,8 @@ A numeric vector of length \code{n_weights}.
 \description{
 Compute a single vector of weights that, when applied uniformly for all
 \code{recipients}, minimises the bias of the pseudocensus OLS estimator.
+}
+\details{
+It is implied that the \code{covariates} is a usual design matrix prepended by
+a vector of ones, i.e., \code{covariates[1, ] = rep(1, nrow(covariates))}.
 }

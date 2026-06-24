@@ -33,7 +33,7 @@ derive_local_debiasing_weights <- function(covariates,
   # to appropriately define linear system
   ordered_donor_covariates <- lapply(ordered_donor_covariates, t)
 
-  recipient_covariates <- covariates[recipients, ]
+  recipient_covariates <- covariates[recipients, , drop = FALSE]
 
   solve_linear_system_wrapper <- function(idx) {
     solve_linear_system(
@@ -80,7 +80,7 @@ derive_global_debiasing_weights <- function(covariates,
 
   ordered_design_matrices <- transpose_list(L = ordered_donor_covariates)
 
-  recipient_design_matrix <- covariates[recipients, ]
+  recipient_design_matrix <- covariates[recipients, , drop = FALSE]
 
   block_matrix <- do.call(cbind, ordered_design_matrices)
 

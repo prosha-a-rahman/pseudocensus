@@ -1,11 +1,18 @@
 Package: pseudocensus
 Type: Package
-Title: Impute missing responses through weighted KNN
+Title: Impute missing responses through weighted nearest neighbours
 Version: 1.0.0
-Author: Prosha A. Rahman
-Maintainer: The package maintainer <p.a.rahman@unsw.edu.au>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Authors@R: 
+    person(
+      given = c("Prosha", "A."),
+      family = "Rahman",
+      email = "p.a.rahman@unsw.edu.au",
+      role = c("aut", "cre"),
+      comment = c(ORCID = "0000-0002-1533-4682")
+    )
+Description: Use the weighted nearest neighbours algorithm to impute values for
+    subsets of a population. Additionally, compute debiasing weights and 
+    coefficients for the ordinary least squares estimator. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -13,7 +20,5 @@ Roxygen: list(markdown = TRUE)
 Imports:
     cli,
     nabor,
-    Rfast,
-    rlang,
     stats
 Config/roxygen2/version: 8.0.0

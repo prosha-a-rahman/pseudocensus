@@ -23,11 +23,13 @@ the candidate points.  \code{donors} must be disjoint to \code{recipients}.}
 \item{n_weights}{A positive integer defining the number of weights used in
 in the weighted nearest neighbours estimates, uniformly for all \code{recipients}.
 The number of weights cannot exceed the number of valid donors, i.e.,
-\code{n_weights <= length(donors)}.}
+\code{n_weights <= length(donors)}. The default argument sets
+\code{n_weights = length(donors)}.}
 }
 \value{
 A \code{length(recipients)}-by-\code{n_weights} numeric matrix of weights
-corresponding rowwise to \code{recipients}.
+corresponding rowwise to \code{recipients} and columnwise to proximity ordering
+\code{1:n_weights}.
 }
 \description{
 Identify vectors of weights for each recipient which, when applied to

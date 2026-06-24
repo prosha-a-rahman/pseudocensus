@@ -26,7 +26,7 @@ weights cannot exceed the number of donors, i.e.,
 \code{ncol(weights) <= length(donors)}.}
 }
 \value{
-A numeric vector of length \code{ncol(covariates) + 1}
+A numeric vector of length \code{ncol(covariates)}.
 }
 \description{
 Compute the ordinary least squares estimator for a partially nearest
@@ -34,5 +34,5 @@ neighbours imputed population
 }
 \details{
 Compute the ordinary least squares estimator in which a population subset of
-\code{recipients} has had their responses imputed by weighted nearest neighbours
+\code{recipients} has had their responses imputed by weighted nearest neighbours.
 }

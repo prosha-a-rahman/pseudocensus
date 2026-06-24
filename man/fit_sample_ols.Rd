@@ -15,8 +15,8 @@ fit_sample_ols(covariates, responses, donors)
 identifies the population subset.}
 }
 \value{
-A numeric vector of length \code{ncol(covariates) + 1} that is the OLS estimate
-between \code{covariates} and \code{responses}.
+A numeric vector of length \code{ncol(covariates)} that is the OLS estimate
+between \code{covariates[donors, ]} and \code{responses[donors]}.
 }
 \description{
 Compute the ordinary least squares estimator for a population subset

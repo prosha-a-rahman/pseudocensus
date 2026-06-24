@@ -31,7 +31,7 @@ weights cannot exceed the number of donors, i.e.,
 \code{ncol(weights) <= length(donors)}.}
 }
 \value{
-A numeric vector of length \code{ncol(covariates) + 1}
+A numeric vector of length \code{ncol(covariates)}.
 }
 \description{
 Compute the bias corrected pseudocensus OLS estimator

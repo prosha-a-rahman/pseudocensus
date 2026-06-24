@@ -13,11 +13,11 @@
 #' @export
 #'
 fit_sample_ols <- function(covariates, responses, donors) {
-  sample_covariates <- covariates[donors, ]
+  sample_covariates <- covariates[donors, , drop = FALSE]
 
   sample_responses <- responses[donors]
 
-  .lm.fit(sample_covariates, sample_responses)$coefficients
+  stats::.lm.fit(sample_covariates, sample_responses)$coefficients
 }
 
 
@@ -50,7 +50,7 @@ fit_pseudocensus_ols <- function(covariates,
     responses = responses
   )
 
-  .lm.fit(covariates, merged_responses)$coefficients
+  stats::.lm.fit(covariates, merged_responses)$coefficients
 }
 
 
