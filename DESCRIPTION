@@ -1,16 +1,19 @@
 Package: pseudocensus
 Type: Package
 Title: Impute missing responses through weighted KNN
-Version: 0.1.0
+Version: 1.0.0
 Author: Prosha A. Rahman
-Maintainer: The package maintainer <yourself@somewhere.net>
+Maintainer: The package maintainer <p.a.rahman@unsw.edu.au>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
-Imports: 
-    MASS,
-    Rfast
+Imports:
+    cli,
+    nabor,
+    Rfast,
+    rlang,
+    stats
+Config/roxygen2/version: 8.0.0

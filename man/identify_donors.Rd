@@ -10,7 +10,7 @@ identify_donors(responses)
 identify_recipients(responses)
 }
 \arguments{
-\item{responses}{A numeric vector that may contain missing elements (\code{NA} values).}
+\item{responses}{A numeric vector, possibly containing \code{NA} values.}
 }
 \value{
 \itemize{
@@ -19,7 +19,14 @@ identify_recipients(responses)
 }
 }
 \description{
-\code{identify_donors()} and \code{identify_recipients()} respectively identify the
-respondent (donors) and nonrespondent (recipient) subsets of a population
-based on missing responses.
+Identify donor indices for population elements with observed responses, and
+recipient indices for those with missing responses requiring imputation.
+}
+\examples{
+# Donors have observed responses; recipients are missing (NA)
+responses <- c(10, NA, 30, NA, 50)
+
+identify_donors(responses)
+identify_recipients(responses)
+
 }

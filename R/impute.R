@@ -1,147 +1,61 @@
-#' Impute a location or response based on weighted k nearest neighbours
+#' Impute covariates or responses using weighted nearest neighbours
 #'
-#' Supply synthetic approximations for the locations or responses of a
-#' population subset using weighted \eqn{k} nearest neighbours.
+#' Construct synthetic covariates or responses for a set of recipients from
+#' weighted combinations of their nearest donor values.
 #'
-#' @inheritParams order_donors
-#' @param recipients Index vector (or integer) that identifies the recipients
-#'   whose responses are to be imputed.
-#' @param weights Numeric vector of weights used for calculating the weighted
-#'   average response or location.
-#' @param responses Numeric vector of responses, potentially containing
-#'   missing `NA` values.
-#' @param donors Index vector of donors. If `donors = NULL`, then the donors are
-#'  identified by the indexes of non-`NA` values in `responses`.
+#' @inheritParams order_donor_indices
+#' @param weights A numeric matrix of imputation weights used for weighted
+#'   nearest neighbours imputation. `weights` corresponds rowwise to `recipients`
+#'   and columnwise to the rank of the proximally sorted donors. The number of
+#'   weights cannot exceed the number of donors, i.e.,
+#'   `ncol(weights) <= length(donors)`.
 #'
-#' @details
-#' `impute_responses()` generates responses for each element in `recipients`
-#'   using a weighted average of proximal donor responses. `impute_location()`
-#'   provides an analogue for the location of `recipients`.
+#' @returns
+#' Writing `n_recipients = length(recipients)` and `p = ncol(covariates)`:
 #'
-#' @return
-#' * `impute_response()`: A length `length(recipients)` numeric vector of the
-#'   weighted averages of the `length(weights)` nearest donors for each
-#'   recipient.
+#' * `impute_covariates()`: an `n_recipients`-by-`p` numeric matrix, where each
+#'   row is the the weighted combination of nearest donor covariates
+#'   corresponding to `recipients`.
 #'
-#' * `impute_locations()`: A `length(recipients) × ncol(locations)` matrix where
-#'   each row contains the approximated location for a recipient.
+#' * `impute_responses()`: a numeric vector of length `n_recipients`, where each
+#'   element is the weighted combination of the nearest donor responses
+#'   corresponding to `recipients`.
 #'
-#' @seealso [order_donors()] for how distances are calculated.
+#' @seealso [order_donor_indices()] for how donors are ranked;
+#'   [derive_local_debiasing_weights()] and [derive_global_debiasing_weights()]
+#'   for evaluating bias minimising weights.
 #'
 #' @export
-impute_responses <- function(
-    recipients,
-    locations,
-    responses,
-    weights,
-    donors = NULL,
-    p = 2
-) {
-
-  if (is.null(donors)) { donors <- identify_donors(responses) }
-
-  n_weights <- length(weights)
-
-  order_donors_wrapper <- function(recipient) {
-
-    order_donors(
-      recipient = recipient,
-      donors = donors,
-      locations = locations,
-      p = p,
-      k = n_weights
-    )
-
-  }
-
-  ordered_donors <- vapply(
-    recipients,
-    order_donors_wrapper,
-    integer(n_weights)
-  )
-
-  donor_responses <- responses[ordered_donors]
-
-  dim(donor_responses) <- dim(ordered_donors)
-
-  crossprod(weights, donor_responses)[1, ]
-
-}
-
-
-
-
-#' @rdname impute_responses
-#' @export
-impute_locations <- function(
-    recipients,
-    donors,
-    locations,
-    weights,
-    p = 2
-) {
-
-  if (length(recipients) == 1) {
-
-    # Force the edge case so that the transposition doesn't coerce a column
-    # vector. This ensures that merging the locations doesn't later break.
-    return(
-      impute_recipient_location(
-        recipient = recipients,
-        donors = donors,
-        locations = locations,
-        weights = weights,
-        p = p
-      )
-    )
-
-  }
-
-  impute_recipient_location_wrapper <- function(recipient) {
-
-    impute_recipient_location(
-      recipient = recipient,
-      donors = donors,
-      locations = locations,
-      weights = weights,
-      p = p
-    )
-
-  }
-
-  dim_locations <- ncol(locations)
-
-  vapply(
-    recipients,
-    impute_recipient_location_wrapper,
-    numeric(dim_locations)
-  ) |> t()
-
-}
-
-
-
-
-impute_recipient_location <- function(
-    recipient,
-    donors,
-    locations,
-    weights,
-    p = 2
-) {
-
-  n_weights <- length(weights)
-
-  ordered_donors <- order_donors(
-    recipient = recipient,
+impute_covariates <- function(covariates, recipients, donors, weights) {
+  ordered_donor_covariates <- order_donor_covariates(
+    covariates = covariates,
+    recipients = recipients,
     donors = donors,
-    locations = locations,
-    p = p,
-    k = n_weights
+    k = ncol(weights)
   )
 
-  ordered_donor_locations <- locations[ordered_donors, ]
+  imputation_wrapper <- function(idx) {
+    crossprod(weights[idx, ], ordered_donor_covariates[[idx]]) |> as.numeric()
+  }
 
-  crossprod(weights, ordered_donor_locations)[1, ]
+  recipient_idx <- seq_along(ordered_donor_covariates)
 
+  p <- ncol(covariates)
+
+  vapply(recipient_idx, imputation_wrapper, numeric(p)) |> t()
+}
+
+
+#' @rdname impute_covariates
+#' @export
+impute_responses <- function(covariates, recipients, donors, weights, responses) {
+  ordered_donor_responses <- order_donor_responses(
+    covariates = covariates,
+    recipients = recipients,
+    donors = donors,
+    responses = responses,
+    k = ncol(weights)
+  )
+
+  rowSums(ordered_donor_responses * weights)
 }
