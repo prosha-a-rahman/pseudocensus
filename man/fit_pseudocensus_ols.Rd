@@ -5,28 +5,29 @@
 \title{Compute the ordinary least squares estimator for a partially nearest
 neighbours imputed population}
 \usage{
-fit_pseudocensus_ols(covariates, responses, donors, recipients, weights)
+fit_pseudocensus_ols(x, y, donors, recipients, weights)
 }
 \arguments{
-\item{covariates}{A rowwise numeric matrix of points.}
+\item{x}{A numeric matrix of rowwise covariates used as matching variables
+for distance calculations.}
 
-\item{responses}{A numeric vector of responses indexed consistently with the
-rows of \code{covariates}.}
+\item{y}{A length \code{nrow(x)} numeric vector of responses indexed consistently
+with the rows of \code{x}. Only used by \code{impute_responses()}.}
 
-\item{donors}{An integer vector of row indices in \code{covariates} identifying
-the candidate points.  \code{donors} must be disjoint to \code{recipients}.}
+\item{donors}{An integer vector of row indices in \code{x} identifying the
+candidate points.}
 
-\item{recipients}{An integer vector of row indices in \code{covariates}
-identifying the reference points. \code{recipients} must be disjoint to \code{donors}.}
+\item{recipients}{An integer vector of row indices in \code{x} identifying the
+reference (query) points.}
 
-\item{weights}{A numeric matrix of imputation weights used for weighted
-nearest neighbours imputation. \code{weights} corresponds rowwise to \code{recipients}
-and columnwise to the rank of the proximally sorted donors. The number of
-weights cannot exceed the number of donors, i.e.,
-\code{ncol(weights) <= length(donors)}.}
+\item{weights}{A numeric matrix where \code{nrow(weights) = length(recipients)}
+and \code{ncol(weights) <= length(donors)}. Each row in \code{weights} supplies the
+imputation weights used in weighted nearest neighbours computation.
+\code{weights} corresponds rowwise to \code{recipients} and columnwise to the rank of
+the proximally sorted donors.}
 }
 \value{
-A numeric vector of length \code{ncol(covariates)}.
+A numeric vector of length \code{ncol(x)}.
 }
 \description{
 Compute the ordinary least squares estimator for a partially nearest

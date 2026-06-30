@@ -1,23 +1,23 @@
 #' Evaluate the bias correction matrix for the pseudocensus OLS estimator
 #'
-#' @inheritParams merge_covariates
+#' @inheritParams merge
 #'
-#' @returns A square numeric matrix with `ncol(covariates)` rows and columns.
+#' @returns A square numeric matrix with `ncol(x)` rows and columns.
 #'
 #'
 #' @export
 #'
-bias_correction_matrix <- function(covariates, recipients, donors, weights) {
-  merged_covariates <- merge_covariates(
-    covariates = covariates,
+bias_correction_matrix <- function(x, recipients, donors, weights) {
+  x_merged <- merge_covariates(
+    x = x,
     recipients = recipients,
     donors = donors,
     weights = weights
   )
 
-  A <- crossprod(covariates)
+  A <- crossprod(x_merged)
 
-  B <- crossprod(covariates, merged_covariates)
+  B <- crossprod(x, x_merged)
 
   solve(B, A)
 }

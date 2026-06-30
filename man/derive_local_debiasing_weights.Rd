@@ -2,29 +2,28 @@
 % Please edit documentation in R/weights.R
 \name{derive_local_debiasing_weights}
 \alias{derive_local_debiasing_weights}
-\title{Derive weights that recover the recipient covariates}
+\title{Derive nearest neighbours weights that reproduce the recipient covariates}
 \usage{
 derive_local_debiasing_weights(
-  covariates,
+  x,
   recipients,
   donors,
-  n_weights = NULL
+  n_weights = length(donors)
 )
 }
 \arguments{
-\item{covariates}{A rowwise numeric matrix of points.}
+\item{x}{A numeric matrix of rowwise covariates used as matching variables
+for distance calculations.}
 
-\item{recipients}{An integer vector of row indices in \code{covariates}
-identifying the reference points. \code{recipients} must be disjoint to \code{donors}.}
+\item{recipients}{An integer vector of row indices in \code{x} identifying the
+reference (query) points.}
 
-\item{donors}{An integer vector of row indices in \code{covariates} identifying
-the candidate points.  \code{donors} must be disjoint to \code{recipients}.}
+\item{donors}{An integer vector of row indices in \code{x} identifying the
+candidate points.}
 
-\item{n_weights}{A positive integer defining the number of weights used in
-in the weighted nearest neighbours estimates, uniformly for all \code{recipients}.
-The number of weights cannot exceed the number of valid donors, i.e.,
-\code{n_weights <= length(donors)}. The default argument sets
-\code{n_weights = length(donors)}.}
+\item{n_weights}{An integer in \code{1:length(donors)} defining the number of
+donors to be weighted per recipient. Defaults to \code{length(donors)} which
+utilises the entire donor pool.}
 }
 \value{
 A \code{length(recipients)}-by-\code{n_weights} numeric matrix of weights
@@ -33,5 +32,5 @@ corresponding rowwise to \code{recipients} and columnwise to proximity ordering
 }
 \description{
 Identify vectors of weights for each recipient which, when applied to
-weighted nearest neighbours estimates, recovers the recipient covariate.
+weighted nearest neighbours, reproduces the original recipient covariate.
 }

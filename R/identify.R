@@ -3,7 +3,7 @@
 #' Identify donor indices for population elements with observed responses, and
 #' recipient indices for those with missing responses requiring imputation.
 #'
-#' @param responses A numeric vector, possibly containing `NA` values.
+#' @param y A numeric vector, possibly containing `NA` values.
 #'
 #' @returns
 #' * `identify_donors()`: Integer vector of indices where responses are not `NA`.
@@ -18,12 +18,12 @@
 #' identify_recipients(responses)
 #'
 #' @export
-identify_donors <- function(responses) {
-  which(!is.na(responses))
+identify_donors <- function(y) {
+  which(!is.na(y))
 }
 
 #' @rdname identify_donors
 #' @export
-identify_recipients <- function(responses) {
-  which(is.na(responses))
+identify_recipients <- function(y) {
+  which(is.na(y))
 }

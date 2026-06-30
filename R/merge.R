@@ -1,43 +1,56 @@
-#' Replace only recipient values using weighted nearest neighbours
+#' Impute recipient values in place by weighted nearest neighbours
 #'
-#' @inheritParams impute_covariates
+#' Impute the covariates or responses of `recipients` from weighted combinations
+#' of their proximally ranked donors covariates or responses, and splice the
+#' estimates back into the full data object in place of the original recipient
+#' entries.
+#'
+#' @inheritParams impute
 #'
 #' @returns
-#' * `merge_covariates()`: A numeric matrix of the same dimension as
-#'   `covariates`, where only rows indexed by `recipients` are replaced with
-#'   their nearest neighbours estimate. Rows indexed by `donors` are unchanged.
+#' * `merge_covariates()`: A numeric matrix with the same dimensions as
+#'   `x`, in which rows indexed by `recipients` are replaced with their weighted
+#'   nearest neighbours estimate and all other rows are unchanged.
 #'
-#' * `merge_responses()`: A numeric vector of the same length as `responses`
-#'   where only elements indexed by `recipients` are replaced with their nearest
-#'   neighbours estimate. Rows indexed by `donors` remain unchanged.
+#' * `merge_responses()`: A numeric vector with the same length as `y`,
+#'   where elements indexed by `recipients` are replaced with their weighted
+#'   nearest neighbours estimate and all other elements are unchanged.
 #'
+#' @seealso [order_donor_indices()] to see how donors are ranked;
+#'   [derive_local_debiasing_weights()] and [derive_global_debiasing_weights()]
+#'   for constructing bias minimising weights.
+#'
+#' @name merge
+NULL
+
+#' @rdname merge
 #' @export
-merge_covariates <- function(covariates, recipients, donors, weights) {
-  imputed_covariates <- impute_covariates(
-    covariates = covariates,
+merge_covariates <- function(x, recipients, donors, weights) {
+  imputed_recipient_x <- impute_covariates(
+    x = x,
     recipients = recipients,
     donors = donors,
     weights = weights
   )
 
-  covariates[recipients, ] <- imputed_covariates
+  x[recipients, ] <- imputed_recipient_x
 
-  covariates
+  x
 }
 
 
-#' @rdname merge_covariates
+#' @rdname merge
 #' @export
-merge_responses <- function(covariates, recipients, donors, weights, responses) {
-  imputed_responses <- impute_responses(
-    covariates = covariates,
+merge_responses <- function(x, recipients, donors, weights, y) {
+  imputed_recipient_y <- impute_responses(
+    x = x,
     recipients = recipients,
     donors = donors,
     weights = weights,
-    responses = responses
+    y = y
   )
 
-  responses[recipients] <- imputed_responses
+  y[recipients] <- imputed_recipient_y
 
-  responses
+  y
 }

@@ -1,23 +1,24 @@
-#' Compute the ordinary least squares estimator for a population subset
+#' Compute the OLS estimator for a population subset
 #'
-#' @param covariates A numeric matrix of rowwise covariates.
-#' @param responses A numeric vector of length `nrow(covariates)`.
-#' @param donors An integer vector in the row indices of `covariates` that
-#'   identifies the population subset.
+#' @param x A numeric matrix of rowwise predictors.
+#' @param y A numeric vector of responses of length `nrow(x)`.
+#' @param donors An integer vector in the row indices of `x` that identifies the
+#'   population subset.
 #'
 #'
 #' @returns
-#' A numeric vector of length `ncol(covariates)` that is the OLS estimate
-#' between `covariates[donors, ]` and `responses[donors]`.
+#' A numeric vector of length `ncol(x)`
 #'
 #' @export
 #'
-fit_sample_ols <- function(covariates, responses, donors) {
-  sample_covariates <- covariates[donors, , drop = FALSE]
+fit_sample_ols <- function(x, y, donors) {
+  x <- prepend_ones(x)
 
-  sample_responses <- responses[donors]
+  x_donors <- x[donors, , drop = FALSE]
 
-  stats::.lm.fit(sample_covariates, sample_responses)$coefficients
+  y_donors <- y[donors]
+
+  stats::.lm.fit(x_donors, y_donors)$coefficients
 }
 
 
@@ -31,26 +32,28 @@ fit_sample_ols <- function(covariates, responses, donors) {
 #' `recipients` has had their responses imputed by weighted nearest neighbours.
 #'
 #'
-#' @inheritParams merge_responses
+#' @inheritParams merge
 #'
 #' @returns
-#' A numeric vector of length `ncol(covariates)`.
+#' A numeric vector of length `ncol(x)`.
 #' @export
 #'
-fit_pseudocensus_ols <- function(covariates,
-                                 responses,
+fit_pseudocensus_ols <- function(x,
+                                 y,
                                  donors,
                                  recipients,
                                  weights) {
-  merged_responses <- merge_responses(
-    covariates = covariates,
+  x <- prepend_ones(x)
+
+  y_merged <- merge_responses(
+    x = x,
     recipients = recipients,
     donors = donors,
     weights = weights,
-    responses = responses
+    y = y
   )
 
-  stats::.lm.fit(covariates, merged_responses)$coefficients
+  stats::.lm.fit(x, y_merged)$coefficients
 }
 
 
@@ -61,30 +64,32 @@ fit_pseudocensus_ols <- function(covariates,
 #' the bias induced by imputing the responses of `recipients` with weighted
 #' nearest neighbours.
 #'
-#' @inheritParams merge_responses
+#' @inheritParams merge
 #'
 #' @returns
-#' A numeric vector of length `ncol(covariates)`.
+#' A numeric vector of length `ncol(x)`.
 #'
 #' @seealso [fit_pseudocensus_ols()] for the uncorrected estimator and
 #'   [bias_correction_matrix()] for the correction applied here.
 #'
 #' @export
-fit_bias_corrected_pseudocensus_ols <- function(covariates,
-                                                responses,
+fit_bias_corrected_pseudocensus_ols <- function(x,
+                                                y,
                                                 donors,
                                                 recipients,
                                                 weights) {
+  x <- prepend_ones(x)
+
   pseudocensus_ols <- fit_pseudocensus_ols(
-    covariates = covariates,
-    responses = responses,
+    x = x,
+    y = y,
     donors = donors,
     recipients = recipients,
     weights = weights
   )
 
   correction_matrix <- bias_correction_matrix(
-    covariates = covariates,
+    x = x,
     recipients = recipients,
     donors = donors,
     weights = weights

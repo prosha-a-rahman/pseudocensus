@@ -2,22 +2,21 @@
 % Please edit documentation in R/estimators.R
 \name{fit_sample_ols}
 \alias{fit_sample_ols}
-\title{Compute the ordinary least squares estimator for a population subset}
+\title{Compute the OLS estimator for a population subset}
 \usage{
-fit_sample_ols(covariates, responses, donors)
+fit_sample_ols(x, y, donors)
 }
 \arguments{
-\item{covariates}{A numeric matrix of rowwise covariates.}
+\item{x}{A numeric matrix of rowwise predictors.}
 
-\item{responses}{A numeric vector of length \code{nrow(covariates)}.}
+\item{y}{A numeric vector of responses of length \code{nrow(x)}.}
 
-\item{donors}{An integer vector in the row indices of \code{covariates} that
-identifies the population subset.}
+\item{donors}{An integer vector in the row indices of \code{x} that identifies the
+population subset.}
 }
 \value{
-A numeric vector of length \code{ncol(covariates)} that is the OLS estimate
-between \code{covariates[donors, ]} and \code{responses[donors]}.
+A numeric vector of length \code{ncol(x)}
 }
 \description{
-Compute the ordinary least squares estimator for a population subset
+Compute the OLS estimator for a population subset
 }

@@ -5,12 +5,12 @@
 \alias{identify_recipients}
 \title{Identify donors and recipients in a population}
 \usage{
-identify_donors(responses)
+identify_donors(y)
 
-identify_recipients(responses)
+identify_recipients(y)
 }
 \arguments{
-\item{responses}{A numeric vector, possibly containing \code{NA} values.}
+\item{y}{A numeric vector, possibly containing \code{NA} values.}
 }
 \value{
 \itemize{

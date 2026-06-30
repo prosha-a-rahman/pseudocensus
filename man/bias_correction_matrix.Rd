@@ -4,25 +4,26 @@
 \alias{bias_correction_matrix}
 \title{Evaluate the bias correction matrix for the pseudocensus OLS estimator}
 \usage{
-bias_correction_matrix(covariates, recipients, donors, weights)
+bias_correction_matrix(x, recipients, donors, weights)
 }
 \arguments{
-\item{covariates}{A rowwise numeric matrix of points.}
+\item{x}{A numeric matrix of rowwise covariates used as matching variables
+for distance calculations.}
 
-\item{recipients}{An integer vector of row indices in \code{covariates}
-identifying the reference points. \code{recipients} must be disjoint to \code{donors}.}
+\item{recipients}{An integer vector of row indices in \code{x} identifying the
+reference (query) points.}
 
-\item{donors}{An integer vector of row indices in \code{covariates} identifying
-the candidate points.  \code{donors} must be disjoint to \code{recipients}.}
+\item{donors}{An integer vector of row indices in \code{x} identifying the
+candidate points.}
 
-\item{weights}{A numeric matrix of imputation weights used for weighted
-nearest neighbours imputation. \code{weights} corresponds rowwise to \code{recipients}
-and columnwise to the rank of the proximally sorted donors. The number of
-weights cannot exceed the number of donors, i.e.,
-\code{ncol(weights) <= length(donors)}.}
+\item{weights}{A numeric matrix where \code{nrow(weights) = length(recipients)}
+and \code{ncol(weights) <= length(donors)}. Each row in \code{weights} supplies the
+imputation weights used in weighted nearest neighbours computation.
+\code{weights} corresponds rowwise to \code{recipients} and columnwise to the rank of
+the proximally sorted donors.}
 }
 \value{
-A square numeric matrix with \code{ncol(covariates)} rows and columns.
+A square numeric matrix with \code{ncol(x)} rows and columns.
 }
 \description{
 Evaluate the bias correction matrix for the pseudocensus OLS estimator

@@ -48,5 +48,21 @@ transpose_list <- function(L) {
 
 
 
+#' Prepend a design matrix with a column of ones if required
+#'
+#' Add a column of ones to a numeric matrix so that it is a valid design matrix
+#' for ordinary least squares computation
+#'
+#' @param x A numeric matrix.
+#'
+#' @returns
+#' If the first column of `x` are all ones, then retun `x`, else prepend a
+#' column of ones to `x`.
+#'
+#' @noRd
+prepend_ones <- function(x) {
+  has_ones <- ncol(x) >= 1 && all(x[, 1] == 1)
 
+  if (has_ones) x else cbind(1, x)
+}
 

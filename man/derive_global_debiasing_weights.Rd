@@ -2,33 +2,35 @@
 % Please edit documentation in R/weights.R
 \name{derive_global_debiasing_weights}
 \alias{derive_global_debiasing_weights}
-\title{Compute global bias minimising weights}
+\title{Derive a global vector of weights that minimises aggregate covariate
+imputation error}
 \usage{
-derive_global_debiasing_weights(covariates, recipients, donors, n_weights)
+derive_global_debiasing_weights(
+  x,
+  recipients,
+  donors,
+  n_weights = length(donors)
+)
 }
 \arguments{
-\item{covariates}{A rowwise numeric matrix of points.}
+\item{x}{A numeric matrix of rowwise covariates used as matching variables
+for distance calculations.}
 
-\item{recipients}{An integer vector of row indices in \code{covariates}
-identifying the reference points. \code{recipients} must be disjoint to \code{donors}.}
+\item{recipients}{An integer vector of row indices in \code{x} identifying the
+reference (query) points.}
 
-\item{donors}{An integer vector of row indices in \code{covariates} identifying
-the candidate points.  \code{donors} must be disjoint to \code{recipients}.}
+\item{donors}{An integer vector of row indices in \code{x} identifying the
+candidate points.}
 
-\item{n_weights}{A positive integer defining the number of weights used in
-in the weighted nearest neighbours estimates, uniformly for all \code{recipients}.
-The number of weights cannot exceed the number of valid donors, i.e.,
-\code{n_weights <= length(donors)}. The default argument sets
-\code{n_weights = length(donors)}.}
+\item{n_weights}{An integer in \code{1:length(donors)} defining the number of
+donors to be weighted per recipient. Defaults to \code{length(donors)} which
+utilises the entire donor pool.}
 }
 \value{
 A numeric vector of length \code{n_weights}.
 }
 \description{
-Compute a single vector of weights that, when applied uniformly for all
-\code{recipients}, minimises the bias of the pseudocensus OLS estimator.
-}
-\details{
-It is implied that the \code{covariates} is a usual design matrix prepended by
-a vector of ones, i.e., \code{covariates[1, ] = rep(1, nrow(covariates))}.
+Compute a single vector of weights which, when applied uniformly for all
+\code{recipients}, minimises the aggregate Euclidean distance between imputed and
+actual covariates.
 }
