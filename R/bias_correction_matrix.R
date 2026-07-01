@@ -15,7 +15,7 @@ debiasing_coefficient <- function(x, recipients, donors, weights) {
     weights = weights
   )
 
-  A <- crossprod(x_merged)
+  A <- crossprod(x)
 
   B <- crossprod(x, x_merged)
 
