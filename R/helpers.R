@@ -1,15 +1,20 @@
 #' Solve a linear system
 #'
-#' Solves the linear system `A %*% x = b`, or failing that, identifies the
-#' linear least squares solution by computing the Moore–Penrose inverse of `A`
-#' through Singular Value Decomposition.
+#' Solves the linear system `A %*% x = b` or identify its linear least squares
+#' solution if an exact solution does not exist.
+#'
+#' @details
+#' `solve_linear_system()` computes the Moore--Penrose inverse of `A` through
+#' Singular Value Decomposition. If an exact solution does not exist, then
+#' `solve_linear_system()` provides the value for `x` which minimises the
+#' Euclidean distance between `A %*% x` and `b`.
+#'
 #'
 #' @param A A numeric matrix.
 #' @param b A numeric vector of length `nrow(A)`.
 #' @param tol Singular values at or below `tol` are treated as zero when forming
 #'   the pseudoinverse. Defaults to
 #'   `max(dim(A)) * max(singular values) * .Machine$double.eps`.
-#'
 #'
 #' @returns A numeric vector of length `ncol(A)`.
 #'
@@ -51,7 +56,7 @@ transpose_list <- function(L) {
 #' Prepend a design matrix with a column of ones if required
 #'
 #' Add a column of ones to a numeric matrix so that it is a valid design matrix
-#' for ordinary least squares computation
+#' for ordinary least squares computation.
 #'
 #' @param x A numeric matrix.
 #'

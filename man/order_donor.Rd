@@ -31,37 +31,36 @@ to return per recipient. Defaults to \code{length(donors)}, which ranks all of
 with the rows of \code{x}. Only used by \code{order_donor_responses()}.}
 }
 \value{
-Writing \code{n_recipients = length(recipients)} and \code{p = ncol(x)}:
+Writing \code{r} = \code{length(recipients)} and \code{p} = \code{ncol(x)}:
 \itemize{
-\item \code{order_donor_indices()}: an \code{n_recipients}-by-\code{k} index-valued matrix where
-each row ranks \code{donors} by their proximity to the corresponding recipient
-index and returns the \code{k} nearest donor indices.
-\item \code{order_donor_covariates()}: a length \code{n_recipients} list of \code{k}-by-\code{p}
-numeric matrices. Each element in the list is a rowwise permuted subset of
-\code{x}, where the rowwise permutations correspond to the index permutation
-in \code{order_donor_indices()}.
-\item \code{order_donor_responses()}: an \code{n_recipients}-by-\code{k} numeric matrix where
-each row is a permuted subset of \code{y} corresponding to the index permutation
-in \code{order_donor_indices()}.
+\item \code{order_donor_indices()}: an \code{r}-by-\code{k} matrix whose elements are populated
+with values from \code{donors}. Each row ranks \code{donors} by their proximity to
+the corresponding recipient and returns the \code{k} nearest donor indices.
+\item \code{order_donor_covariates()}: a length \code{r} list of \code{k}-by-\code{p} numeric
+matrices. Each element in the list is a rowwise permuted subset of \code{x},
+where the rowwise permutations correspond to the index permutation in
+\code{order_donor_indices()}.
+\item \code{order_donor_responses()}: an \code{r}-by-\code{k} numeric matrix where each row is a
+permuted subset of \code{y} corresponding to the index permutation in
+\code{order_donor_indices()}.
 }
 }
 \description{
-Rank a candidate set of points by their proximity to a set of reference
-points and return their associated indices, covariates, or responses.
+Rank a candidate pool of \code{donors} by their proximity to a set of reference
+\code{recipients} and return the ranked donor indices, covariates, or responses.
 }
 \details{
-Distances are computed between the rows of \code{x}, each of which is a
-\code{ncol(x)}-dimensional covariate vector defining the matching variables. The
+Distances are computed between the rows of \code{x}, each of which is an
+\code{ncol(x)}-dimensional covariate vector defining the \emph{matching variables}. The
 row-index vectors \code{donors} and \code{recipients} respectively identify the
 candidate and reference points in \code{x}. Donors are independently ranked by
-their proximity to each recipient using the Euclidean metric, and the nearest
-\code{k} are returned. The associated set of indices, covariates, or responses for
-the ranked donors are returned depending on which of \verb{order_donor_*()} is
-called.
+their Euclidean proximity to each recipient. The associated set of indices,
+covariates, or responses for the \code{k} nearest donors are returned depending on
+which of \verb{order_donor_*()} is called.
 
-It is possible for \code{donors} and \code{recipients} to overlap, in which case the
-nearest donor for overlapping recipients will be the recipients themselves.
-Distance ties are resolved by the underlying \code{\link[nabor:knn]{nabor::knn()}} search.
+It is possible for \code{donors} and \code{recipients} to overlap, in which case each
+overlapping recipient is its own nearest donor. Distance ties are resolved by
+the underlying \code{\link[nabor:knn]{nabor::knn()}} search.
 }
 \seealso{
 \code{\link[nabor:knn]{nabor::knn()}} for the underlying nearest-neighbour search.

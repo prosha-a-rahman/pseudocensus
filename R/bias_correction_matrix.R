@@ -7,7 +7,7 @@
 #'
 #' @export
 #'
-bias_correction_matrix <- function(x, recipients, donors, weights) {
+debiasing_coefficient <- function(x, recipients, donors, weights) {
   x_merged <- merge_covariates(
     x = x,
     recipients = recipients,

@@ -17,13 +17,15 @@
 #' identify_donors(responses)
 #' identify_recipients(responses)
 #'
-#' @export
-identify_donors <- function(y) {
-  which(!is.na(y))
-}
+#' @name identify
+NULL
 
-#' @rdname identify_donors
+
+#' @rdname identify
 #' @export
-identify_recipients <- function(y) {
-  which(is.na(y))
-}
+identify_donors <- function(y) which(!is.na(y))
+
+
+#' @rdname identify
+#' @export
+identify_recipients <- function(y) which(is.na(y))

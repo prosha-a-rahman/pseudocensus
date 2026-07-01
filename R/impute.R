@@ -1,28 +1,25 @@
 #' Impute covariates or responses using weighted nearest neighbours
 #'
 #' Respectively construct synthetic covariates or responses for a set of
-#' recipients from weighted combinations of their nearest donor covariates or
+#' `recipients` from weighted combinations of their nearest donor covariates or
 #' responses.
 #'
 #' @inheritParams order_donor
 #' @param weights A numeric matrix where `nrow(weights) = length(recipients)`
-#'   and `ncol(weights) <= length(donors)`. Each row in `weights` supplies the
-#'   imputation weights used in weighted nearest neighbours computation.
-#'   `weights` corresponds rowwise to `recipients` and columnwise to the rank of
-#'   the proximally sorted donors.
+#'   and `ncol(weights) <= length(donors)`. Each row `weights` supplies the
+#'   imputation weights for the corresponding recipient. `weights` corresponds
+#'   columnwise to the rank of the proximally sorted donors.
 #' @param y A length `nrow(x)` numeric vector of responses indexed consistently
 #'   with the rows of `x`. Only used by `impute_responses()`.
 #'
 #' @returns
-#' Writing `n_recipients = length(recipients)`, `p = ncol(x)`, and
-#' `k = ncol(weights)`:
+#' Writing `r` = `length(recipients)`, `p` = `ncol(x)`, and `k` = `ncol(weights)`:
+#' * `impute_covariates()`: an `r`-by-`p` numeric matrix where each row is the
+#'    weighted combination of the `k` nearest donor covariates corresponding to
+#'    `recipients`.
 #'
-#' * `impute_covariates()`: an `n_recipients`-by-`p` numeric matrix, where each
-#'   row is the weighted combination of the `k` nearest donor covariates
-#'   corresponding to `recipients`.
-#'
-#' * `impute_responses()`: a length `n_recipients` numeric vector where each
-#'   element is the weighted combination of responses for the `k` nearest donors
+#' * `impute_responses()`: a numeric vector of length `r` where each element is
+#'   the weighted combination of responses for the `k` nearest donors
 #'   corresponding to `recipients`.
 #'
 #' @seealso [order_donor_indices()] to see how donors are ranked;

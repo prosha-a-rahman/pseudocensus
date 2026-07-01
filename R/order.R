@@ -1,21 +1,20 @@
 #' Rank donors by their distance to each recipient
 #'
-#' Rank a candidate set of points by their proximity to a set of reference
-#' points and return their associated indices, covariates, or responses.
+#' Rank a candidate pool of `donors` by their proximity to a set of reference
+#' `recipients` and return the ranked donor indices, covariates, or responses.
 #'
 #' @details
-#' Distances are computed between the rows of `x`, each of which is a
-#' `ncol(x)`-dimensional covariate vector defining the matching variables. The
+#' Distances are computed between the rows of `x`, each of which is an
+#' `ncol(x)`-dimensional covariate vector defining the *matching variables*. The
 #' row-index vectors `donors` and `recipients` respectively identify the
 #' candidate and reference points in `x`. Donors are independently ranked by
-#' their proximity to each recipient using the Euclidean metric, and the nearest
-#' `k` are returned. The associated set of indices, covariates, or responses for
-#' the ranked donors are returned depending on which of `order_donor_*()` is
-#' called.
+#' their Euclidean proximity to each recipient. The associated set of indices,
+#' covariates, or responses for the `k` nearest donors are returned depending on
+#' which of `order_donor_*()` is called.
 #'
-#' It is possible for `donors` and `recipients` to overlap, in which case the
-#' nearest donor for overlapping recipients will be the recipients themselves.
-#' Distance ties are resolved by the underlying [nabor::knn()] search.
+#' It is possible for `donors` and `recipients` to overlap, in which case each
+#' overlapping recipient is its own nearest donor. Distance ties are resolved by
+#' the underlying [nabor::knn()] search.
 #'
 #' @param x A numeric matrix of rowwise covariates used as matching variables
 #'   for distance calculations.
@@ -30,19 +29,19 @@
 #'   with the rows of `x`. Only used by `order_donor_responses()`.
 #'
 #' @returns
-#' Writing `n_recipients = length(recipients)` and `p = ncol(x)`:
-#' * `order_donor_indices()`: an `n_recipients`-by-`k` index-valued matrix where
-#'   each row ranks `donors` by their proximity to the corresponding recipient
-#'   index and returns the `k` nearest donor indices.
+#' Writing `r` = `length(recipients)` and `p` = `ncol(x)`:
+#' * `order_donor_indices()`: an `r`-by-`k` matrix whose elements are populated
+#'   with values from `donors`. Each row ranks `donors` by their proximity to
+#'   the corresponding recipient and returns the `k` nearest donor indices.
 #'
-#' * `order_donor_covariates()`: a length `n_recipients` list of `k`-by-`p`
-#'   numeric matrices. Each element in the list is a rowwise permuted subset of
-#'   `x`, where the rowwise permutations correspond to the index permutation
-#'   in `order_donor_indices()`.
+#' * `order_donor_covariates()`: a length `r` list of `k`-by-`p` numeric
+#'   matrices. Each element in the list is a rowwise permuted subset of `x`,
+#'   where the rowwise permutations correspond to the index permutation in
+#'   `order_donor_indices()`.
 #'
-#' * `order_donor_responses()`: an `n_recipients`-by-`k` numeric matrix where
-#'   each row is a permuted subset of `y` corresponding to the index permutation
-#'   in `order_donor_indices()`.
+#' * `order_donor_responses()`: an `r`-by-`k` numeric matrix where each row is a
+#'   permuted subset of `y` corresponding to the index permutation in
+#'   `order_donor_indices()`.
 #'
 #' @seealso [nabor::knn()] for the underlying nearest-neighbour search.
 #'
@@ -76,7 +75,7 @@ order_donor_indices <- function(x, recipients, donors, k = length(donors)) {
 #' @rdname order_donor
 #' @export
 order_donor_covariates <- function(x, recipients, donors, k = length(donors)) {
-  ordered_donors <- order_donor_indices(
+  donors_ordered <- order_donor_indices(
     x = x,
     recipients = recipients,
     donors = donors,
@@ -84,7 +83,7 @@ order_donor_covariates <- function(x, recipients, donors, k = length(donors)) {
   )
 
   lapply(
-    asplit(ordered_donors, 1),
+    asplit(donors_ordered, 1),
     function(idx) x[idx, , drop = FALSE]
   )
 }
@@ -99,7 +98,7 @@ order_donor_responses <- function(x,
                                   donors,
                                   y,
                                   k = length(donors)) {
-  ordered_donors <- order_donor_indices(
+  donors_ordered <- order_donor_indices(
     x = x,
     recipients = recipients,
     donors = donors,
@@ -107,8 +106,8 @@ order_donor_responses <- function(x,
   )
 
   matrix(
-    y[ordered_donors],
-    nrow = nrow(ordered_donors),
-    ncol = ncol(ordered_donors)
+    y[donors_ordered],
+    nrow = nrow(donors_ordered),
+    ncol = ncol(donors_ordered)
   )
 }

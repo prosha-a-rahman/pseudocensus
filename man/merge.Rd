@@ -21,10 +21,9 @@ reference (query) points.}
 candidate points.}
 
 \item{weights}{A numeric matrix where \code{nrow(weights) = length(recipients)}
-and \code{ncol(weights) <= length(donors)}. Each row in \code{weights} supplies the
-imputation weights used in weighted nearest neighbours computation.
-\code{weights} corresponds rowwise to \code{recipients} and columnwise to the rank of
-the proximally sorted donors.}
+and \code{ncol(weights) <= length(donors)}. Each row \code{weights} supplies the
+imputation weights for the corresponding recipient. \code{weights} corresponds
+columnwise to the rank of the proximally sorted donors.}
 
 \item{y}{A length \code{nrow(x)} numeric vector of responses indexed consistently
 with the rows of \code{x}. Only used by \code{impute_responses()}.}

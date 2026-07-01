@@ -38,11 +38,7 @@ fit_sample_ols <- function(x, y, donors) {
 #' A numeric vector of length `ncol(x)`.
 #' @export
 #'
-fit_pseudocensus_ols <- function(x,
-                                 y,
-                                 donors,
-                                 recipients,
-                                 weights) {
+fit_pseudocensus_ols <- function(x, y, donors, recipients, weights) {
   x <- prepend_ones(x)
 
   y_merged <- merge_responses(
@@ -70,14 +66,10 @@ fit_pseudocensus_ols <- function(x,
 #' A numeric vector of length `ncol(x)`.
 #'
 #' @seealso [fit_pseudocensus_ols()] for the uncorrected estimator and
-#'   [bias_correction_matrix()] for the correction applied here.
+#'   [debiasing_coefficient()] for the correction applied here.
 #'
 #' @export
-fit_bias_corrected_pseudocensus_ols <- function(x,
-                                                y,
-                                                donors,
-                                                recipients,
-                                                weights) {
+fit_debiased_pseudocensus_ols <- function(x, y, donors, recipients, weights) {
   x <- prepend_ones(x)
 
   pseudocensus_ols <- fit_pseudocensus_ols(
@@ -88,7 +80,7 @@ fit_bias_corrected_pseudocensus_ols <- function(x,
     weights = weights
   )
 
-  correction_matrix <- bias_correction_matrix(
+  correction_matrix <- debiasing_coefficient(
     x = x,
     recipients = recipients,
     donors = donors,

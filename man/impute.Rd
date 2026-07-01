@@ -21,29 +21,27 @@ reference (query) points.}
 candidate points.}
 
 \item{weights}{A numeric matrix where \code{nrow(weights) = length(recipients)}
-and \code{ncol(weights) <= length(donors)}. Each row in \code{weights} supplies the
-imputation weights used in weighted nearest neighbours computation.
-\code{weights} corresponds rowwise to \code{recipients} and columnwise to the rank of
-the proximally sorted donors.}
+and \code{ncol(weights) <= length(donors)}. Each row \code{weights} supplies the
+imputation weights for the corresponding recipient. \code{weights} corresponds
+columnwise to the rank of the proximally sorted donors.}
 
 \item{y}{A length \code{nrow(x)} numeric vector of responses indexed consistently
 with the rows of \code{x}. Only used by \code{impute_responses()}.}
 }
 \value{
-Writing \code{n_recipients = length(recipients)}, \code{p = ncol(x)}, and
-\code{k = ncol(weights)}:
+Writing \code{r} = \code{length(recipients)}, \code{p} = \code{ncol(x)}, and \code{k} = \code{ncol(weights)}:
 \itemize{
-\item \code{impute_covariates()}: an \code{n_recipients}-by-\code{p} numeric matrix, where each
-row is the weighted combination of the \code{k} nearest donor covariates
-corresponding to \code{recipients}.
-\item \code{impute_responses()}: a length \code{n_recipients} numeric vector where each
-element is the weighted combination of responses for the \code{k} nearest donors
+\item \code{impute_covariates()}: an \code{r}-by-\code{p} numeric matrix where each row is the
+weighted combination of the \code{k} nearest donor covariates corresponding to
+\code{recipients}.
+\item \code{impute_responses()}: a numeric vector of length \code{r} where each element is
+the weighted combination of responses for the \code{k} nearest donors
 corresponding to \code{recipients}.
 }
 }
 \description{
 Respectively construct synthetic covariates or responses for a set of
-recipients from weighted combinations of their nearest donor covariates or
+\code{recipients} from weighted combinations of their nearest donor covariates or
 responses.
 }
 \seealso{
